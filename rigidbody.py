@@ -1,11 +1,12 @@
 from pygame.math import Vector2
 from dataclasses import dataclass, field
 from collision.Collider import Collider
+from utility import zero_vector_factory
 
 @dataclass
 class Rigidbody:
-    position: Vector2 = Vector2.zero
-    velocity: Vector2 = Vector2.zero
+    position: Vector2 = field(default_factory=zero_vector_factory)
+    velocity: Vector2 = field(default_factory=zero_vector_factory)
     mass: float = 1 #infinity should be supported
     orientation: float = 0 #an angle in radians from the default orientation, counter clockwise 
     angular_velocity: float = 0
