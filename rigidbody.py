@@ -7,10 +7,10 @@ from utility import zero_vector_factory
 class Rigidbody:
     position: Vector2 = field(default_factory=zero_vector_factory)
     velocity: Vector2 = field(default_factory=zero_vector_factory)
-    mass: float = 1 #infinity should be supported
+    mass: float = 1 #infinity should be supported (ignores everything linear)
     orientation: float = 0 #an angle in radians from the default orientation, counter clockwise 
     angular_velocity: float = 0
-    rotational_inertia: float = 1 #infinity should be supported
+    rotational_inertia: float = 1 #infinity should be supported (ignores everything rotational)
     colliders: list[Collider] = field(default_factory=list)
 
     def __post_init__(self):
