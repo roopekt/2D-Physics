@@ -3,12 +3,12 @@ from dataclasses import dataclass
 
 @dataclass
 class Rigidbody:
-    position: Vector2
-    velocity: Vector2
-    mass: float #infinity should be supported
-    orientation: float #an angle in radians from default orientation, counter clockwise 
-    angular_velocity: float
-    rotational_inertia: float #infinity should be supported
+    position: Vector2 = Vector2.zero
+    velocity: Vector2 = Vector2.zero
+    mass: float = 1 #infinity should be supported
+    orientation: float = 0 #an angle in radians from the default orientation, counter clockwise 
+    angular_velocity: float = 0
+    rotational_inertia: float = 1 #infinity should be supported
 
     def apply_impulse(self, impulse):
         self.velocity += impulse / self.mass
