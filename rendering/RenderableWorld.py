@@ -31,4 +31,4 @@ class RenderableWorld:
             self.window,
             color,
             position,
-            1)
+            collider.radius / scale)
