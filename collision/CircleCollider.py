@@ -1,4 +1,4 @@
-from Collider import Collider
+from collision.Collider import Collider
 from dataclasses import dataclass
 
 @dataclass
