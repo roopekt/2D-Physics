@@ -7,7 +7,7 @@ class PhysicsWorld:
     bodies: list[Rigidbody] = field(default_factory=list)
     gravity: Vector2 = field(default_factory=lambda: Vector2(0.0, -9.807))
 
-    def advance(self, deltaTime):
+    def advance(self, delta_time):
         for body in self.bodies:
-            body.velocity += self.gravity * deltaTime
-            body.position += body.velocity * deltaTime
+            body.velocity += self.gravity * delta_time
+            body.position += body.velocity * delta_time

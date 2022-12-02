@@ -21,7 +21,7 @@ world = RenderableWorld(
     ],
     camera = Camera(
         position = Vector2(0, 0),
-        height = 20
+        height = 50
     )
 )
 
@@ -34,9 +34,10 @@ def handle_events():
 should_be_running = True
 clock = pygame.time.Clock()
 while should_be_running:
-    delta_time = clock.tick(FPS)
+    delta_time = clock.tick(FPS) / 1000 #we want delta_time in seconds
 
     handle_events()
+    world.physics_world.advance(delta_time)
     world.render()
 
 pygame.quit()

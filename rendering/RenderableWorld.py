@@ -2,6 +2,7 @@ from dataclasses import dataclass, field
 from rendering.RenderableBody import RenderableBody
 from rendering.Camera import Camera
 from collision.Collider import Collider
+from PhysicsWorld import PhysicsWorld
 from pygame import Color
 from pygame.math import Vector2
 import pygame
@@ -12,6 +13,10 @@ class RenderableWorld:
     camera: Camera = field(default_factory=lambda: Camera())
     background_color: Color = field(default_factory=lambda: Color(255, 255, 255))
     window: pygame.Surface = field(default_factory=lambda: pygame.display.set_mode((640, 480), pygame.RESIZABLE))
+    physics_world: PhysicsWorld = field(default_factory=lambda: PhysicsWorld())
+
+    def __post_init__(self):
+        self.physics_world.bodies += [body.rigidbody for body in self.bodies]
 
     def render(self):
         self.window.fill(self.background_color)
