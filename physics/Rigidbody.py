@@ -7,15 +7,20 @@ from utility import zero_vector_factory
 class Rigidbody:
     position: Vector2 = field(default_factory=zero_vector_factory)
     velocity: Vector2 = field(default_factory=zero_vector_factory)
-    mass: float = 1 #infinity should be supported (ignores everything linear)
+    mass: float = 1
     orientation: float = 0 #an angle in radians from the default orientation, counter clockwise 
     angular_velocity: float = 0
-    rotational_inertia: float = 1 #infinity should be supported (ignores everything rotational)
+    rotational_inertia: float = 1
     colliders: list[Collider] = field(default_factory=list)
+    is_static: bool = False
 
     def __post_init__(self):
         for collider in self.colliders:
             collider.parent = self
+
+        if self.is_static:
+            self.mass = float('inf')
+            self.rotational_inertia = float('inf')
 
     def apply_impulse(self, impulse):
         self.velocity += impulse / self.mass

@@ -9,5 +9,6 @@ class PhysicsWorld:
 
     def advance(self, delta_time):
         for body in self.bodies:
-            body.velocity += self.gravity * delta_time
-            body.position += body.velocity * delta_time
+            if not body.is_static:
+                body.velocity += self.gravity * delta_time
+                body.position += body.velocity * delta_time
