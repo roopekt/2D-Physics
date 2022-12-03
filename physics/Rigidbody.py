@@ -1,6 +1,6 @@
 from pygame.math import Vector2
 from dataclasses import dataclass, field
-from collision.Collider import Collider
+from .collision import Collider
 from utility import zero_vector_factory
 
 @dataclass

@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from Rigidbody import Rigidbody
+from .Rigidbody import Rigidbody
 from pygame.math import Vector2
 
 @dataclass

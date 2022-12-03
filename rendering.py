@@ -1,11 +1,21 @@
 from dataclasses import dataclass, field
-from rendering.RenderableBody import RenderableBody
-from rendering.Camera import Camera
-from collision.Collider import Collider
-from PhysicsWorld import PhysicsWorld
+from physics.collision import Collider
+from physics.Rigidbody import Rigidbody
+from physics.PhysicsWorld import PhysicsWorld
 from pygame import Color
 from pygame.math import Vector2
 import pygame
+from utility import zero_vector_factory
+
+@dataclass
+class Camera:
+    position: Vector2 = field(default_factory=zero_vector_factory)
+    height: float = 10
+
+@dataclass
+class RenderableBody:
+    rigidbody: Rigidbody
+    color: Color = field(default_factory=lambda: Color(0, 0, 0))
 
 @dataclass
 class RenderableWorld:

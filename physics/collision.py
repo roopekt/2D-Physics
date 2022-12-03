@@ -1,5 +1,5 @@
-from pygame.math import Vector2
 from dataclasses import dataclass, field
+from pygame.math import Vector2
 from utility import zero_vector_factory
 
 @dataclass
@@ -13,3 +13,15 @@ class Collider:
 
     def orientation(self):
         return self.parent.orientation + self.angle_offset
+
+@dataclass
+class Collision:
+    bodyA: Collider
+    bodyB: Collider
+    collision_point: Vector2 #world space
+    penetration_distance: float
+    normal: Vector2 #surface normal of bodyA (outwards pointing) at collision_point
+
+@dataclass
+class CircleCollider(Collider):
+    radius: float = 1
