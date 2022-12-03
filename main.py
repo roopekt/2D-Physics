@@ -11,6 +11,7 @@ world = RenderableWorld(
         RenderableBody(
             Rigidbody(
                 position = Vector2(0, 0),
+                angular_velocity = 3,
                 colliders = [
                     CircleCollider()
                 ]

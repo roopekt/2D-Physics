@@ -12,3 +12,4 @@ class PhysicsWorld:
             if not body.is_static:
                 body.velocity += self.gravity * delta_time
                 body.position += body.velocity * delta_time
+                body.orientation += body.angular_velocity * delta_time
