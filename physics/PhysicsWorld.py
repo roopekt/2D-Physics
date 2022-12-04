@@ -13,3 +13,20 @@ class PhysicsWorld:
                 body.velocity += self.gravity * delta_time
                 body.position += body.velocity * delta_time
                 body.orientation += body.angular_velocity * delta_time
+
+        self.handle_collisions()
+
+    def handle_collisions(self):
+        collisions = self.get_collisions()
+        print(f"{len(collisions)} collisions")
+
+    def get_collisions(self):
+        collisions = []
+        for iA, bodyA in enumerate(self.bodies):
+            for iB, bodyB in enumerate(self.bodies):
+                if iA < iB: #to prevent self collisions and double counting other collisions
+                    for colliderA in bodyA.colliders:
+                        for colliderB in bodyB.colliders:
+                            collisions += colliderA.get_collisions_with(colliderB)
+
+        return collisions

@@ -14,6 +14,15 @@ class Collider:
     def orientation(self):
         return self.parent.orientation + self.angle_offset
 
+    def get_collisions_with(self, other):
+        if self.parent.is_static and other.parent.is_static:
+            return []
+
+        if isinstance(self, CircleCollider) and isinstance(other, CircleCollider):
+            return get_collisions_circle_circle(self, other)
+        else:
+            raise Exception(f"Can't check collision between a {type(self)} and a {type(other)}.")
+
 @dataclass
 class Collision:
     bodyA: Collider
@@ -25,3 +34,20 @@ class Collision:
 @dataclass
 class CircleCollider(Collider):
     radius: float = 1
+
+def get_collisions_circle_circle(bodyA: CircleCollider, bodyB: CircleCollider):
+    total_radius = bodyA.radius + bodyB.radius
+    posA: Vector2 = bodyA.position()
+    posB: Vector2 = bodyB.position()
+    distance = posA.distance_to(posB)
+
+    if total_radius <= distance:
+        return []
+    else:
+        return [Collision(
+            bodyA = bodyA,
+            bodyB = bodyB,
+            collision_point = posA.lerp(posB, bodyA.radius / total_radius),
+            penetration_distance = total_radius - distance,
+            normal = (posB - posA) / distance
+        )]
