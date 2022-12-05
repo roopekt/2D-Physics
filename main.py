@@ -10,10 +10,25 @@ world = RenderableWorld(
     bodies = [
         RenderableBody(
             Rigidbody(
-                position = Vector2(0, 10),
+                position = Vector2(0, 20),
+                angular_velocity = 0,
+                mass = 10,
+                colliders = [
+                    CircleCollider(
+                        elasticity = 1.0
+                    )
+                ]
+            ),
+            color = Color(255, 0, 0)
+        ),
+        RenderableBody(
+            Rigidbody(
+                position = Vector2(0, 15),
                 angular_velocity = 0,
                 colliders = [
-                    CircleCollider()
+                    CircleCollider(
+                        elasticity = 1.0
+                    )
                 ]
             )
         ),

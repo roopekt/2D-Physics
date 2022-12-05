@@ -1,5 +1,6 @@
 from dataclasses import dataclass, field
 from .Rigidbody import Rigidbody
+from .collision import Collision
 from pygame.math import Vector2
 
 @dataclass
@@ -18,9 +19,11 @@ class PhysicsWorld:
 
     def handle_collisions(self):
         collisions = self.get_collisions()
-        print(f"{len(collisions)} collisions")
 
-    def get_collisions(self):
+        for collision in collisions:
+            collision.update_velocities()
+
+    def get_collisions(self) -> list[Collision]:
         collisions = []
         for iA, bodyA in enumerate(self.bodies):
             for iB, bodyB in enumerate(self.bodies):
