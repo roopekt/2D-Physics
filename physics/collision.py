@@ -1,6 +1,7 @@
 from dataclasses import dataclass, field
 from pygame.math import Vector2
 from utility import zero_vector_factory, divide_vectors_as_complex, multiply_vectors_as_complex
+import math
 
 @dataclass
 class Collider:
@@ -41,7 +42,6 @@ class Collision:
         reaction_impulse = Vector2(0.0)
 
         if relative_velocity.x > 0.0:
-            print("WARNING: collision between objects moving away from each other")
             return
 
         #bounce
@@ -58,6 +58,18 @@ class Collision:
         self.bodyA.rigidbody.apply_impulse_at_point( reaction_impulse_world_space, self.collision_point)
         self.bodyB.rigidbody.apply_impulse_at_point(-reaction_impulse_world_space, self.collision_point)
 
+    def update_positions(self):
+        massA = self.bodyA.rigidbody.mass
+        massB = self.bodyB.rigidbody.mass
+        total_mass = massA + massB
+
+        nan_to_one = lambda x: 1.0 if math.isnan(x) else x #to make infinite masses work properly
+        contributionA = nan_to_one(massB / total_mass) #just switching A and B isn't physically accurate, but nor is the idea of this whole function. good enough
+        contributionB = nan_to_one(massA / total_mass)
+
+        self.bodyA.rigidbody.position -= self.normal * self.penetration_distance * contributionA
+        self.bodyB.rigidbody.position += self.normal * self.penetration_distance * contributionB
+
 @dataclass
 class CircleCollider(Collider):
     radius: float = 1
@@ -68,7 +80,7 @@ def get_collisions_circle_circle(bodyA: CircleCollider, bodyB: CircleCollider):
     posB: Vector2 = bodyB.position()
     distance = posA.distance_to(posB)
 
-    if total_radius <= distance:
+    if total_radius < distance:
         return []
     else:
         return [Collision(
