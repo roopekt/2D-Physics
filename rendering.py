@@ -1,6 +1,5 @@
 from dataclasses import dataclass, field
-from physics.collision import Collider, CircleCollider
-from physics.Rigidbody import Rigidbody
+from physics.bodies import *
 from physics.PhysicsWorld import PhysicsWorld
 from pygame import Color
 from pygame.math import Vector2

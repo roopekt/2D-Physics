@@ -1,6 +1,7 @@
 from dataclasses import dataclass, field
-from .Rigidbody import Rigidbody
-from .collision import Collision
+from .bodies import *
+from .collision_detection import get_collisions_between
+from .collision_response import update_velocities, update_positions
 from pygame.math import Vector2
 
 @dataclass
@@ -23,10 +24,10 @@ class PhysicsWorld:
         collisions = self.get_collisions()
 
         for collision in collisions:
-            collision.update_velocities()
+            update_velocities(collision)
 
         for collision in collisions:
-            collision.update_positions()
+            update_positions(collision)
 
     def get_collisions(self) -> list[Collision]:
         collisions = []
@@ -35,6 +36,6 @@ class PhysicsWorld:
                 if iA < iB: #to prevent self collisions and double counting other collisions
                     for colliderA in bodyA.colliders:
                         for colliderB in bodyB.colliders:
-                            collisions += colliderA.get_collisions_with(colliderB)
+                            collisions += get_collisions_between(colliderA, colliderB)
 
         return collisions

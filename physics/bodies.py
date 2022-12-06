@@ -1,6 +1,5 @@
 from pygame.math import Vector2
 from dataclasses import dataclass, field
-from .collision import Collider
 from utility import zero_vector_factory, get_tangent
 
 @dataclass
@@ -11,7 +10,7 @@ class Rigidbody:
     orientation: float = 0 #an angle in radians from the default orientation, counter clockwise 
     angular_velocity: float = 0
     rotational_inertia: float = 1
-    colliders: list[Collider] = field(default_factory=list)
+    colliders: list = field(default_factory=list)
     is_static: bool = False
 
     def __post_init__(self):
@@ -52,3 +51,30 @@ class Rigidbody:
 
     def get_offset(self, world_space_point): #vector from this object to world_space_point
         return world_space_point - self.position
+
+@dataclass
+class Collider:
+    offset: Vector2 = field(default_factory=zero_vector_factory)
+    angle_offset: float = 0
+    elasticity: float = 0.3
+    rest_friction_coefficient: float = 0.3
+    dynamic_friction_coefficient: float = 0.2
+    rigidbody: Rigidbody = field(init=False)
+
+    def position(self):
+        return self.rigidbody.position + self.offset.rotate_rad(self.rigidbody.orientation)
+
+    def orientation(self):
+        return self.rigidbody.orientation + self.angle_offset
+
+@dataclass
+class CircleCollider(Collider):
+    radius: float = 1
+
+@dataclass
+class Collision:
+    bodyA: Collider
+    bodyB: Collider
+    collision_point: Vector2 #world space
+    penetration_distance: float
+    normal: Vector2 #surface normal of bodyA (outwards pointing) at collision_point

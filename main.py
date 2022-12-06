@@ -2,9 +2,8 @@ import pygame
 from pygame import Color
 from pygame.math import Vector2
 from rendering import *
-from physics.Rigidbody import Rigidbody
+from physics.bodies import *
 from physics.PhysicsWorld import PhysicsWorld
-from physics.collision import CircleCollider
 
 FPS = 60
 world = RenderableWorld(
