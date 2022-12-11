@@ -36,7 +36,9 @@ world = RenderableWorld(
             Rigidbody(
                 position = Vector2(0, -10),
                 colliders = [
-                    CircleCollider(radius=2)
+                    RectangleCollider(
+                        size = Vector2(15, 1)
+                    )
                 ],
                 is_static = True
             )
