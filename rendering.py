@@ -40,6 +40,8 @@ class RenderableWorld:
     def draw_collider(self, collider: Collider, color: Color):
         if isinstance(collider, CircleCollider):
             self.draw_circle_collider(collider, color)
+        elif isinstance(collider, RectangleCollider):
+            self.draw_rectangle_collider(collider, color)
         else:
             raise Exception(f"Can't draw a {type(collider)}.")
     
@@ -60,6 +62,16 @@ class RenderableWorld:
         beam_color = Color(255, 255, 255) - color #negative color
         pygame.draw.line(self.window, beam_color, beam_points[0], beam_points[2])
         pygame.draw.line(self.window, beam_color, beam_points[1], beam_points[3])
+
+    def draw_rectangle_collider(self, collider: RectangleCollider, color: Color):
+        corners_world_space = collider.get_corners_counterclockwise()
+        corners_screen_space = [self.get_screen_position(corner) for corner in corners_world_space]
+
+        pygame.draw.polygon(
+            self.window,
+            color,
+            corners_screen_space
+        )
 
     def get_scale(self):
         return self.camera.height / self.window.get_height()
