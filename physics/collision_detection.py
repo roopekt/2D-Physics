@@ -75,8 +75,7 @@ def get_collisions_rectangle_circle(rectangle: RectangleCollider, circle: Circle
             normal = -circle_normal
         )]
     elif len(edge_collisions) == 2:
-        assert(edge_collisions[0].edge.pointB is edge_collisions[1].edge.pointA)
-        corner: Vector2 = edge_collisions[0].edge.pointB
+        corner: Vector2 = edge_collisions[0].edge.pointB if edge_collisions[0].edge.pointB is edge_collisions[1].edge.pointA else edge_collisions[0].edge.pointA
         distance = circle_pos.distance_to(corner)
 
         if distance > circle.radius:
@@ -96,7 +95,4 @@ def are_enclosing_circles_colliding(bodyA: Collider, bodyB: Collider):
     return distance_squared < total_radius**2
 
 def project_perpendicular_to_axis(axis: LineSegment, point: Vector2):
-    tangent = axis.tangent()
-    point -= axis.pointA
-
-    return tangent.cross(point)
+    return -axis.tangent().cross(point - axis.pointA)
