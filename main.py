@@ -1,36 +1,28 @@
 import pygame
-from pygame import Color
-from pygame.math import Vector2
+from pygame import Color, Vector2
 from rendering import *
 from physics.bodies import *
 from physics.PhysicsWorld import PhysicsWorld
+from math import pi
 
 FPS = 60
 world = RenderableWorld(
     bodies = [
         RenderableBody(
             Rigidbody(
-                position = Vector2(0, 20),
+                position = Vector2(0, 0),
+                orientation = 0.5,
                 angular_velocity = 0,
                 mass = 10,
+                rotational_inertia = 10,
                 colliders = [
-                    CircleCollider(
+                    RectangleCollider(
+                        size = Vector2(2, 2),
                         elasticity = 0.5
                     )
                 ]
             ),
             color = Color(255, 0, 0)
-        ),
-        RenderableBody(
-            Rigidbody(
-                position = Vector2(0, 5),
-                angular_velocity = 0,
-                colliders = [
-                    CircleCollider(
-                        elasticity = 0.5
-                    )
-                ]
-            )
         ),
         RenderableBody(
             Rigidbody(

@@ -1,6 +1,7 @@
 from pygame.math import Vector2
 from .bodies import *
 from dataclasses import dataclass
+from itertools import permutations
 
 def get_collisions_between(bodyA: Collider, bodyB: Collider):
     if bodyA.rigidbody.is_static and bodyB.rigidbody.is_static:
@@ -35,7 +36,45 @@ def get_collisions_circle_circle(bodyA: CircleCollider, bodyB: CircleCollider):
         )]
 
 def get_collisions_rectangle_rectangle(bodyA: RectangleCollider, bodyB: RectangleCollider):
-    pass
+    if not are_enclosing_circles_colliding(bodyA, bodyB):
+        return []
+
+    @dataclass
+    class EdgeCollision():
+        edge: LineSegment
+        penetration_distance: float
+
+    collisions: list[Collision] = []
+    for _bodyA, _bodyb in permutations((bodyA, bodyB)):
+        for corner in _bodyA.get_corners_counterclockwise():
+
+            corner_inside = True
+            min_penetration_edge_collision = None
+            for edge in _bodyb.get_edges_counterclockwise():
+                distance_to_edge = project_perpendicular_to_axis(edge, corner)
+                if distance_to_edge >= 0:
+                    corner_inside = False
+                    break
+                elif min_penetration_edge_collision == None or -distance_to_edge < min_penetration_edge_collision.penetration_distance:#if we have a "better" edge
+                    min_penetration_edge_collision = EdgeCollision(edge, -distance_to_edge)
+
+            if corner_inside:
+                collisions.append(Collision(
+                    bodyA = _bodyA,
+                    bodyB = _bodyb,
+                    collision_point = corner,
+                    penetration_distance = min_penetration_edge_collision.penetration_distance,
+                    normal = min_penetration_edge_collision.edge.normal()
+                ))
+
+            if len(collisions) == 2:
+                for collision in collisions:
+                    collision.penetration_distance /= 2 #to prevent position update from overshoting
+
+                return collisions
+
+    assert(len(collisions) <= 1)
+    return collisions
 
 def get_collisions_rectangle_circle(rectangle: RectangleCollider, circle: CircleCollider):
     if not are_enclosing_circles_colliding(rectangle, circle):
