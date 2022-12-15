@@ -17,3 +17,6 @@ def multiply_vectors_as_complex(vecA: Vector2, vecB: Vector2):
 
 def divide_vectors_as_complex(vecA: Vector2, vecB: Vector2):
     return complex_to_vector(vector_to_complex(vecA) / vector_to_complex(vecB))
+
+def sign(x):
+    return 1 if x >= 0 else -1

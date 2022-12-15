@@ -10,15 +10,14 @@ world = RenderableWorld(
     bodies = [
         RenderableBody(
             Rigidbody(
-                position = Vector2(0, 0),
-                orientation = 0.5,
-                angular_velocity = 0,
+                position = Vector2(-20, 0),
+                velocity = Vector2(10, 0),
                 mass = 10,
                 rotational_inertia = 10,
                 colliders = [
                     RectangleCollider(
                         size = Vector2(2, 2),
-                        elasticity = 0.5
+                        elasticity = 0
                     )
                 ]
             ),
@@ -29,7 +28,8 @@ world = RenderableWorld(
                 position = Vector2(0, -10),
                 colliders = [
                     RectangleCollider(
-                        size = Vector2(15, 1)
+                        size = Vector2(40, 1),
+                        elasticity = 0
                     )
                 ],
                 is_static = True
