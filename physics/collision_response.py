@@ -1,5 +1,5 @@
 from pygame.math import Vector2
-from utility import *
+from math_helpers import *
 import math
 from .bodies import Collision
 from statistics import mean

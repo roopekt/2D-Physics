@@ -4,7 +4,7 @@ from physics.PhysicsWorld import PhysicsWorld
 from pygame import Color
 from pygame.math import Vector2
 import pygame
-from utility import zero_vector_factory
+from math_helpers import zero_vector_factory
 import math
 
 @dataclass

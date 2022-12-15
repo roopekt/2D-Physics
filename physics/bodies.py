@@ -1,6 +1,6 @@
 from pygame.math import Vector2
 from dataclasses import dataclass, field
-from utility import zero_vector_factory, get_tangent
+from math_helpers import zero_vector_factory, get_tangent
 from abc import ABC, abstractmethod
 
 @dataclass
