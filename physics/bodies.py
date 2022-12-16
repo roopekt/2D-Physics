@@ -13,6 +13,8 @@ class Rigidbody:
     rotational_inertia: float = 1
     colliders: list = field(default_factory=list)
     is_static: bool = False
+    drag_coefficient: float = 0.8
+    angular_drag_coefficient: float = 0.2
 
     def __post_init__(self):
         for collider in self.colliders:

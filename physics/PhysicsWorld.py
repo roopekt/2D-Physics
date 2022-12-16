@@ -9,11 +9,15 @@ class PhysicsWorld:
     bodies: list[Rigidbody] = field(default_factory=list)
     gravity: Vector2 = field(default_factory=lambda: Vector2(0.0, -9.807))
     collision_iteration_count: int = 5
+    air_density: float = 1.204
 
     def advance(self, delta_time):
         for body in self.bodies:
             if not body.is_static:
                 body.velocity += self.gravity * delta_time
+                body.apply_impulse(self.air_density * body.drag_coefficient * (-body.velocity * body.velocity.magnitude()) * delta_time)
+                body.apply_angular_impulse(self.air_density * body.angular_drag_coefficient * -body.angular_velocity**2 * delta_time)
+
                 body.position += body.velocity * delta_time
                 body.orientation += body.angular_velocity * delta_time
 
