@@ -4,6 +4,9 @@ from rendering import *
 from physics.bodies import *
 from physics.PhysicsWorld import PhysicsWorld
 from math import pi
+from physics.contact_properties import *
+
+ContactTable()
 
 FPS = 60
 world = RenderableWorld(
