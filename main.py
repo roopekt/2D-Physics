@@ -1,5 +1,6 @@
 import pygame
-from pygame import Color, Vector2
+from pygame import Color
+from pygame.math import Vector2
 from rendering import *
 from physics.bodies import *
 from physics.PhysicsWorld import PhysicsWorld
@@ -16,9 +17,7 @@ world = RenderableWorld(
                 mass = 10,
                 rotational_inertia = 10,
                 colliders = [
-                    RectangleCollider(
-                        size = Vector2(2, 2)
-                    )
+                    CircleCollider()
                 ]
             ),
             color = Color(255, 0, 0)
@@ -29,7 +28,7 @@ world = RenderableWorld(
                 colliders = [
                     RectangleCollider(
                         size = Vector2(40, 1),
-                        surface_material_name="bouncy slime"
+                        surface_material_name="default"
                     )
                 ],
                 is_static = True
@@ -59,5 +58,7 @@ while should_be_running:
     handle_events()
     world.physics_world.advance(delta_time)
     world.render()
+
+    print(f"{world.physics_world.bodies[0].angular_velocity=}")
 
 pygame.quit()

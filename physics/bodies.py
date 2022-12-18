@@ -25,13 +25,13 @@ class Rigidbody:
             self.mass = float('inf')
             self.rotational_inertia = float('inf')
 
-    def apply_impulse(self, impulse):
+    def apply_impulse(self, impulse: Vector2):
         self.velocity += impulse / self.mass
 
-    def apply_angular_impulse(self, impulse):
+    def apply_angular_impulse(self, impulse: float):
         self.angular_velocity += impulse / self.rotational_inertia
 
-    def apply_impulse_at_point(self, impulse, point):
+    def apply_impulse_at_point(self, impulse: Vector2, point: Vector2):
         offset = self.get_offset(point)
         self.apply_impulse(impulse)
         self.apply_angular_impulse(offset.cross(impulse))
@@ -40,18 +40,20 @@ class Rigidbody:
         offset = self.get_offset(point)
         return self.velocity - get_tangent(offset) * self.angular_velocity
 
+    #how much the velocity of point (world space) would change if said impulse was applied at the point?
+    def get_delta_velocity(self, test_impulse: Vector2, point: Vector2) -> Vector2:
+        start_velocity = self.velocity
+        start_angular_velocity = self.angular_velocity
+        start_velocity_at_point = self.velocity_at_point(point)
 
-    def apply_test_impulse(self, unit_impulse: Vector2, point: Vector2): #how much the velocity of point (world space) would change along the unit_impulse vector if said impulse was applied at the point?
-        # code assumes unit_impulse is a unit vector
+        self.apply_impulse_at_point(test_impulse, point)
+        end_velocity_at_point = self.velocity_at_point(point)
 
-        linear_reaction = 1 / self.mass # (impulse / mass) * impulse.normalize()
+        #reset the changed velocities
+        self.velocity = start_velocity
+        self.angular_velocity = start_angular_velocity
 
-        # rotational_reaction = offset x impulse / rotational_inertia (change of angular velocity)
-        # * offset x impulse.normalize()
-        offset = self.get_offset(point)
-        rotational_reaction = offset.cross(unit_impulse)**2 / self.rotational_inertia
-
-        return linear_reaction + rotational_reaction
+        return end_velocity_at_point - start_velocity_at_point
 
     def get_offset(self, world_space_point): #vector from this object to world_space_point
         return world_space_point - self.position
@@ -93,7 +95,7 @@ class CircleCollider(Collider):
 
 @dataclass
 class RectangleCollider(Collider):
-    size: Vector2 = field(default_factory=lambda: Vector2(2, 1.5))
+    size: Vector2 = field(default_factory=lambda: Vector2(2, 2))
 
     def encircling_radius(self):
         return self.size.magnitude() / 2
