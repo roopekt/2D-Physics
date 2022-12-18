@@ -14,9 +14,14 @@ class PhysicsWorld:
     def advance(self, delta_time):
         for body in self.bodies:
             if not body.is_static:
+                #gravity
                 body.velocity += self.gravity * delta_time
-                body.apply_impulse(self.air_density * body.drag_coefficient * (-body.velocity * body.velocity.magnitude()) * delta_time)
-                body.apply_angular_impulse(self.air_density * body.angular_drag_coefficient * -body.angular_velocity**2 * delta_time)
+
+                #air resistance
+                velocity_squared = body.velocity * body.velocity.magnitude()
+                body.apply_impulse(-self.air_density * body.drag_coefficient * velocity_squared * delta_time)
+                angular_velocity_squared = body.angular_velocity * abs(body.angular_velocity)
+                body.apply_angular_impulse(-self.air_density * body.angular_drag_coefficient * angular_velocity_squared * delta_time)
 
                 body.position += body.velocity * delta_time
                 body.orientation += body.angular_velocity * delta_time
