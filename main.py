@@ -27,7 +27,7 @@ world = RenderableWorld(
                 position = Vector2(0, -10),
                 colliders = [
                     RectangleCollider(
-                        size = Vector2(40, 1),
+                        size = Vector2(200, 1),
                         surface_material_name="default"
                     )
                 ],
@@ -58,7 +58,5 @@ while should_be_running:
     handle_events()
     world.physics_world.advance(delta_time)
     world.render()
-
-    print(f"{world.physics_world.bodies[0].angular_velocity=}")
 
 pygame.quit()

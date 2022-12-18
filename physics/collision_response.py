@@ -29,8 +29,8 @@ def update_velocities(collision: Collision):
 
     #apply the impulses
     reaction_impulse_world_space = multiply_vectors_as_complex(reaction_impulse, tangent)
-    collision.bodyA.rigidbody.apply_impulse_at_point( reaction_impulse_world_space, collision.collision_point)
-    collision.bodyB.rigidbody.apply_impulse_at_point(-reaction_impulse_world_space, collision.collision_point)
+    collision.bodyA.rigidbody.apply_impulse_at_point(-reaction_impulse_world_space, collision.collision_point)
+    collision.bodyB.rigidbody.apply_impulse_at_point( reaction_impulse_world_space, collision.collision_point)
 
 def update_positions(collision: Collision):
     massA = collision.bodyA.rigidbody.mass
@@ -53,10 +53,10 @@ def get_required_impulse_for_velocity_change(target_velocity_change: Vector2, co
 
     matrix = np.array([[response_to_dx.x, response_to_dy.x],
                        [response_to_dx.y, response_to_dy.y]])
-    target = np.array([-target_velocity_change.x, -target_velocity_change.y])
-    stopping_impulse = np.linalg.solve(matrix, target)
+    target = np.array([target_velocity_change.x, target_velocity_change.y])
+    impulse = np.linalg.solve(matrix, target)
 
-    return Vector2(stopping_impulse[0], stopping_impulse[1])
+    return Vector2(impulse[0], impulse[1])
 
 #in collision space
 def get_required_impulse_for_velocity_change_dynamic_friction(target_velocity_change_along_normal: float, collision: Collision, dynamic_friction_sign: float) -> Vector2:

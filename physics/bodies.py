@@ -42,7 +42,7 @@ class Rigidbody:
 
     #how much the velocity of point (world space) would change if said impulse was applied at the point?
     def get_delta_velocity(self, test_impulse: Vector2, point: Vector2) -> Vector2:
-        start_velocity = self.velocity
+        start_velocity = self.velocity.copy()
         start_angular_velocity = self.angular_velocity
         start_velocity_at_point = self.velocity_at_point(point)
 
