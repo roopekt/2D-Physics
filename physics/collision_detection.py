@@ -74,7 +74,7 @@ def get_collisions_rectangle_rectangle(bodyA: RectangleCollider, bodyB: Rectangl
 
             if len(collisions) == 2:
                 for collision in collisions:
-                    collision.penetration_distance /= 2 #to prevent position update from overshoting
+                    collision.penetration_distance /= 2 #to prevent position update from overshooting
 
                 return collisions
 

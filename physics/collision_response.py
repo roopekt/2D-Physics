@@ -71,6 +71,6 @@ def get_required_impulse_for_velocity_change_dynamic_friction(target_velocity_ch
 def get_delta_velocity_collision_space(impulse: Vector2, collision: Collision):
     tangent = get_tangent(collision.normal)
     impulse = multiply_vectors_as_complex(impulse, tangent)
-    global_space_reaction = (collision.bodyB.rigidbody.get_delta_velocity(impulse, collision.collision_point)
-                           - collision.bodyA.rigidbody.get_delta_velocity(impulse, collision.collision_point))
+    global_space_reaction = (collision.bodyB.rigidbody.get_delta_velocity( impulse, collision.collision_point)
+                           - collision.bodyA.rigidbody.get_delta_velocity(-impulse, collision.collision_point))
     return divide_vectors_as_complex(global_space_reaction, tangent)
