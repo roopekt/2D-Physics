@@ -2,6 +2,9 @@ from pygame.math import Vector2
 from .bodies import *
 from dataclasses import dataclass
 from itertools import permutations
+from .contact_properties import ContactPropertyTable
+
+CONTACT_PROPERTY_TABLE = ContactPropertyTable()
 
 def get_collisions_between(bodyA: Collider, bodyB: Collider):
     if bodyA.rigidbody.is_static and bodyB.rigidbody.is_static:
@@ -32,7 +35,8 @@ def get_collisions_circle_circle(bodyA: CircleCollider, bodyB: CircleCollider):
             bodyB = bodyB,
             collision_point = posA.lerp(posB, bodyA.radius / total_radius),
             penetration_distance = total_radius - distance,
-            normal = (posB - posA) / distance
+            normal = (posB - posA) / distance,
+            contact_properties = get_contact_properties(bodyA, bodyB)
         )]
 
 def get_collisions_rectangle_rectangle(bodyA: RectangleCollider, bodyB: RectangleCollider):
@@ -64,7 +68,8 @@ def get_collisions_rectangle_rectangle(bodyA: RectangleCollider, bodyB: Rectangl
                     bodyB = _bodyb,
                     collision_point = corner,
                     penetration_distance = min_penetration_edge_collision.penetration_distance,
-                    normal = min_penetration_edge_collision.edge.normal()
+                    normal = min_penetration_edge_collision.edge.normal(),
+                    contact_properties = get_contact_properties(bodyA, bodyB)
                 ))
 
             if len(collisions) == 2:
@@ -111,7 +116,8 @@ def get_collisions_rectangle_circle(rectangle: RectangleCollider, circle: Circle
             bodyB = circle,
             collision_point = circle_pos + circle_normal * circle.radius,
             penetration_distance = circle.radius - distance_to_edge,
-            normal = -circle_normal
+            normal = -circle_normal,
+            contact_properties = get_contact_properties(rectangle, circle)
         )]
     elif len(edge_collisions) == 2:
         corner: Vector2 = edge_collisions[0].edge.pointB if edge_collisions[0].edge.pointB is edge_collisions[1].edge.pointA else edge_collisions[0].edge.pointA
@@ -125,7 +131,8 @@ def get_collisions_rectangle_circle(rectangle: RectangleCollider, circle: Circle
             bodyB = circle,
             collision_point = corner,
             penetration_distance = circle.radius - distance,
-            normal = (circle_pos - corner) / distance
+            normal = (circle_pos - corner) / distance,
+            contact_properties = get_contact_properties(rectangle, circle)
         )]
 
 def are_enclosing_circles_colliding(bodyA: Collider, bodyB: Collider):
@@ -135,3 +142,6 @@ def are_enclosing_circles_colliding(bodyA: Collider, bodyB: Collider):
 
 def project_perpendicular_to_axis(axis: LineSegment, point: Vector2):
     return -axis.tangent().cross(point - axis.pointA)
+
+def get_contact_properties(bodyA: Collider, bodyB: Collider):
+    return CONTACT_PROPERTY_TABLE.get_contact_properties(bodyA.surface_material_name, bodyB.surface_material_name)

@@ -2,6 +2,7 @@ from pygame.math import Vector2
 from dataclasses import dataclass, field
 from math_helpers import zero_vector_factory, get_tangent
 from abc import ABC, abstractmethod
+from .contact_properties import ContactProperties
 
 @dataclass
 class Rigidbody:
@@ -70,9 +71,7 @@ class LineSegment:
 class Collider(ABC):
     offset: Vector2 = field(default_factory=zero_vector_factory)
     angle_offset: float = 0
-    elasticity: float = 0.3
-    rest_friction_coefficient: float = 0.3
-    dynamic_friction_coefficient: float = 0.2
+    surface_material_name: str = "default"
     rigidbody: Rigidbody = field(init=False)
 
     def position(self):
@@ -126,3 +125,4 @@ class Collision:
     collision_point: Vector2 #world space
     penetration_distance: float
     normal: Vector2 #surface normal of bodyA (outwards pointing) at collision_point
+    contact_properties: ContactProperties

@@ -6,8 +6,6 @@ from physics.PhysicsWorld import PhysicsWorld
 from math import pi
 from physics.contact_properties import *
 
-ContactTable()
-
 FPS = 60
 world = RenderableWorld(
     bodies = [
@@ -19,8 +17,7 @@ world = RenderableWorld(
                 rotational_inertia = 10,
                 colliders = [
                     RectangleCollider(
-                        size = Vector2(2, 2),
-                        elasticity = 0
+                        size = Vector2(2, 2)
                     )
                 ]
             ),
@@ -32,7 +29,7 @@ world = RenderableWorld(
                 colliders = [
                     RectangleCollider(
                         size = Vector2(40, 1),
-                        elasticity = 0
+                        surface_material_name="bouncy slime"
                     )
                 ],
                 is_static = True
