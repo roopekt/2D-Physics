@@ -35,8 +35,6 @@ def update_velocities(collision: Collision) -> bool: #returns true if an impulse
     collision.bodyA.rigidbody.apply_impulse_at_point(-reaction_impulse_world_space, collision.collision_point)
     collision.bodyB.rigidbody.apply_impulse_at_point( reaction_impulse_world_space, collision.collision_point)
 
-    print(f"{rest_friction_possible=}")
-
     return True
 
 def update_positions(collision: Collision):
