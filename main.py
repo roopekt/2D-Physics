@@ -6,6 +6,7 @@ from physics.bodies import *
 from physics.PhysicsWorld import PhysicsWorld
 from math import pi
 from physics.contact_properties import *
+from time import time
 
 FPS = 60
 world = RenderableWorld(
@@ -160,12 +161,23 @@ def handle_events():
         if event.type == pygame.QUIT:
             global should_be_running
             should_be_running = False
+            
+last_frame_time = time()
+frame_index = 0
 
 should_be_running = True
 clock = pygame.time.Clock()
 while should_be_running:
     delta_time = clock.tick(FPS) / 1000 #we want delta_time in seconds
     delta_time = min(delta_time, 0.05)
+
+    if time() - last_frame_time > 0.2:
+        pygame.image.save(world.window, f"capture/frame{frame_index}.png")
+        frame_index += 1
+        last_frame_time = time()
+
+    if frame_index > 10:
+        break
 
     handle_events()
     world.physics_world.advance(delta_time)
