@@ -35,7 +35,8 @@ def update_velocities(collision: Collision) -> bool: #returns true if an impulse
     collision.bodyA.rigidbody.apply_impulse_at_point(-reaction_impulse_world_space, collision.collision_point)
     collision.bodyB.rigidbody.apply_impulse_at_point( reaction_impulse_world_space, collision.collision_point)
 
-    print(f"{-reaction_impulse_world_space=}")
+    print(f"{rest_friction_possible=}")
+
     return True
 
 def update_positions(collision: Collision):
@@ -68,7 +69,7 @@ def get_required_impulse_for_velocity_change(target_velocity_change: Vector2, co
 def get_required_impulse_for_velocity_change_dynamic_friction(target_velocity_change_along_normal: float, collision: Collision, dynamic_friction_sign: float) -> Vector2:
     dynamic_friction_coefficient = dynamic_friction_sign * collision.contact_properties.dynamic_friction_coefficient
 
-    test_impulse = Vector2(1, dynamic_friction_coefficient)
+    test_impulse = Vector2(dynamic_friction_coefficient, 1)
     response_to_test = get_delta_velocity_collision_space(test_impulse, collision)
 
     multiplyer = target_velocity_change_along_normal / response_to_test.y
