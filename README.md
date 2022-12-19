@@ -30,3 +30,7 @@ A simple 2D physics engine with a simple renderer.
 - immovable bodies
 - multi-iteration solving
 - a renderer (made with Pygame)
+
+## License 
+
+This project is distributed under the MIT License. See `LICENSE.txt` for more information.
