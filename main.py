@@ -12,22 +12,34 @@ world = RenderableWorld(
     bodies = [
         RenderableBody(
             Rigidbody(
-                position = Vector2(-20, 0),
-                velocity = Vector2(10, 0),
+                position = Vector2(0, 0),
+                velocity = Vector2(0, 0),
                 mass = 10,
                 rotational_inertia = 10,
                 colliders = [
-                    CircleCollider()
+                    RectangleCollider()
                 ]
             ),
             color = Color(255, 0, 0)
         ),
         RenderableBody(
             Rigidbody(
-                position = Vector2(0, -10),
+                position = Vector2(0, -5),
                 colliders = [
                     RectangleCollider(
                         size = Vector2(200, 1),
+                        surface_material_name="default"
+                    )
+                ],
+                is_static = True
+            )
+        ),
+        RenderableBody(
+            Rigidbody(
+                position = Vector2(-15, 0),
+                colliders = [
+                    RectangleCollider(
+                        size = Vector2(1, 100),
                         surface_material_name="default"
                     )
                 ],
@@ -40,7 +52,8 @@ world = RenderableWorld(
         height = 50
     ),
     physics_world = PhysicsWorld(
-        collision_iteration_count = 5
+        collision_iteration_count = 10,
+        collision_velocity_iteration_count=10
     )
 )
 
@@ -58,5 +71,7 @@ while should_be_running:
     handle_events()
     world.physics_world.advance(delta_time)
     world.render()
+
+    bodyA = world.physics_world.bodies[0]
 
 pygame.quit()

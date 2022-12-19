@@ -6,14 +6,14 @@ from statistics import mean
 import numpy as np
 from math_helpers import get_tangent
 
-def update_velocities(collision: Collision):
+def update_velocities(collision: Collision) -> bool: #returns true if an impulse was applied
     tangent = get_tangent(collision.normal)
     relative_velocity: Vector2 = (collision.bodyB.rigidbody.velocity_at_point(collision.collision_point)
                                 - collision.bodyA.rigidbody.velocity_at_point(collision.collision_point))
     relative_velocity = divide_vectors_as_complex(relative_velocity, tangent) #transform into collision space (rotate so that y is in the direction of the normal)
 
     if relative_velocity.y > 0.0: #if moving away from each other
-        return
+        return False
 
     #reaction impulse assuming rest friction is possible
     target_velocity_change = Vector2(-relative_velocity.x, -(1 + collision.contact_properties.elasticity) * relative_velocity.y)
@@ -27,10 +27,16 @@ def update_velocities(collision: Collision):
     if not rest_friction_possible:
         reaction_impulse = get_required_impulse_for_velocity_change_dynamic_friction(target_velocity_change.y, collision, sign(reaction_impulse.x))
 
+    if reaction_impulse.y < 0.0:
+        reaction_impulse.y = 0
+
     #apply the impulses
     reaction_impulse_world_space = multiply_vectors_as_complex(reaction_impulse, tangent)
     collision.bodyA.rigidbody.apply_impulse_at_point(-reaction_impulse_world_space, collision.collision_point)
     collision.bodyB.rigidbody.apply_impulse_at_point( reaction_impulse_world_space, collision.collision_point)
+
+    print(f"{-reaction_impulse_world_space=}")
+    return True
 
 def update_positions(collision: Collision):
     massA = collision.bodyA.rigidbody.mass
