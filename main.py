@@ -11,89 +11,119 @@ from time import time
 FPS = 60
 world = RenderableWorld(
     bodies = [
-        #region cubes
+        #region pile
         RenderableBody(
             Rigidbody(
-                position = Vector2(-10, 30),
+                position = Vector2(0, 9),
                 velocity = Vector2(0, 0),
                 mass = 5,
                 rotational_inertia = 5,
                 colliders = [
-                    RectangleCollider()
+                    CircleCollider(
+                        radius = 1,
+                        surface_material_name = "sticky"
+                    )
+                ]
+            ),
+            color = Color(0, 0, 255)
+        ),
+        RenderableBody(
+            Rigidbody(
+                position = Vector2(0, 7),
+                mass = 5,
+                rotational_inertia = 5,
+                colliders = [
+                    RectangleCollider(
+                        size=Vector2(2, 2),
+                        surface_material_name="bouncy slime"
+                    )
                 ]
             ),
             color = Color(255, 0, 0)
         ),
         RenderableBody(
             Rigidbody(
-                position = Vector2(10, 30),
+                position = Vector2(0, 5),
                 velocity = Vector2(0, 0),
                 mass = 5,
-                rotational_inertia = 5,
+                rotational_inertia = 3,
                 colliders = [
-                    RectangleCollider()
+                    RectangleCollider(
+                        size=Vector2(3, 3),
+                        surface_material_name="bouncy slime"
+                    )
+                ]
+            ),
+            color = Color(0, 0, 255)
+        ),
+        RenderableBody(
+            Rigidbody(
+                position = Vector2(0, 2),
+                velocity = Vector2(0, 0),
+                mass = 1,
+                rotational_inertia = 2,
+                colliders = [
+                    RectangleCollider(size=Vector2(1, 2))
                 ]
             ),
             color = Color(255, 0, 0)
         ),
         #endregion
 
-        #red ball
+        #stick
         RenderableBody(
             Rigidbody(
-                position = Vector2(-15, 40),
-                velocity = Vector2(-15, 2),
-                mass = 10,
+                position = Vector2(3, 5),
+                velocity = Vector2(0, 0),
+                mass = 3,
                 rotational_inertia = 10,
                 colliders = [
-                    CircleCollider(
-                        surface_material_name = "default",
-                        radius = 1.5
-                    )
+                    RectangleCollider(size=Vector2(.2, 8))
                 ]
             ),
-            color = Color(255, 0, 0)
-        ),
-
-        #super ball
-        RenderableBody(
-            Rigidbody(
-                position = Vector2(0, 40),
-                velocity = Vector2(50, 0),
-                mass = 20,
-                rotational_inertia = 20,
-                colliders = [
-                    CircleCollider(
-                        surface_material_name = "bouncy slime",
-                        radius = 2
-                    )
-                ]
-            ),
-            color = Color(0, 255, 0)
+            color = Color(128, 0, 0)
         ),
 
         #cross
         RenderableBody(
             Rigidbody(
-                position = Vector2(0, 25),
-                velocity = Vector2(0, 0),
+                position = Vector2(-5, 6.2),
+                orientation = .3,
+                velocity = Vector2(20, 0),
                 mass = 10,
-                rotational_inertia = 20,
+                rotational_inertia = 50,
                 colliders = [
                     RectangleCollider(
                         size = Vector2(1, 5),
-                        surface_material_name = "frictionless"
+                        surface_material_name = "default"
                     ),
                     RectangleCollider(
                         size = Vector2(5, 1),
-                        surface_material_name = "frictionless"
+                        surface_material_name = "default"
                     )
                 ]
             ),
-            color = Color(0, 200, 255)
+            color = Color(0, 255, 100)
         ),
 
-        #region walls:
+        #extra ball
+        RenderableBody(
+            Rigidbody(
+                position = Vector2(10, 1.8),
+                orientation = -0.2,
+                velocity = Vector2(0, 0),
+                mass = 5,
+                rotational_inertia = 5,
+                colliders = [
+                    CircleCollider(
+                        radius = .8,
+                    )
+                ]
+            ),
+            color = Color(0, 0, 255)
+        ),
+
+        #floor
         RenderableBody(
             Rigidbody(
                 position = Vector2(0, 0),
@@ -104,51 +134,13 @@ world = RenderableWorld(
                 ],
                 is_static = True
             )
-        ),
-        RenderableBody(
-            Rigidbody(
-                position = Vector2(-30, 100),
-                colliders = [
-                    RectangleCollider(
-                        size = Vector2(2, 200),
-                        surface_material_name = "bouncy slime"
-                    )
-                ],
-                is_static = True
-            ),
-            color = Color(0, 128, 0)
-        ),
-        RenderableBody(
-            Rigidbody(
-                position = Vector2(30, 100),
-                colliders = [
-                    RectangleCollider(
-                        size = Vector2(2, 200),
-                        surface_material_name = "bouncy slime"
-                    )
-                ],
-                is_static = True
-            ),
-            color = Color(0, 128, 0)
-        ),
-        RenderableBody(
-            Rigidbody(
-                position = Vector2(0, 20),
-                orientation = 0.5,
-                colliders = [
-                    RectangleCollider(
-                        size = Vector2(20, 1.5)
-                    )
-                ],
-                is_static = True
-            )
         )
-        #endregion
     ],
     camera = Camera(
-        position = Vector2(0, 25),
-        height = 50
+        position = Vector2(2, 12/2),
+        height = 12
     ),
+    window = pygame.display.set_mode((1024, 512)),
     physics_world = PhysicsWorld(
         collision_iteration_count = 2,
         collision_velocity_iteration_count=2,
@@ -161,28 +153,22 @@ def handle_events():
         if event.type == pygame.QUIT:
             global should_be_running
             should_be_running = False
-            
-last_frame_time = time()
-frame_index = 0
+
+total_time = 0
 
 should_be_running = True
 clock = pygame.time.Clock()
 while should_be_running:
     delta_time = clock.tick(FPS) / 1000 #we want delta_time in seconds
     delta_time = min(delta_time, 0.05)
+    total_time += delta_time
 
-    if time() - last_frame_time > 0.2:
-        pygame.image.save(world.window, f"capture/frame{frame_index}.png")
-        frame_index += 1
-        last_frame_time = time()
-
-    if frame_index > 10:
+    if (total_time > 2.5):
+        pygame.image.save(world.window, f"capture/image.png")
         break
 
     handle_events()
-    world.physics_world.advance(delta_time)
+    world.physics_world.advance(delta_time / 10)
     world.render()
-
-    bodyA = world.physics_world.bodies[0]
 
 pygame.quit()
