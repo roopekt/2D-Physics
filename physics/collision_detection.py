@@ -1,7 +1,7 @@
 from pygame.math import Vector2
 from .bodies import *
 from dataclasses import dataclass
-from itertools import permutations
+from itertools import permutations, combinations
 from .contact_properties import ContactPropertyTable
 
 CONTACT_PROPERTY_TABLE = ContactPropertyTable()
@@ -43,6 +43,25 @@ def get_collisions_rectangle_rectangle(bodyA: RectangleCollider, bodyB: Rectangl
     if not are_enclosing_circles_colliding(bodyA, bodyB):
         return []
 
+    collisions = get_collisions_rectangle_rectangle_naive(bodyA, bodyB)
+
+    # Without this, cubes of same size on a floor can slide past each other,
+    # because corners will be moving along the edges of the other collider.
+    if len(collisions) >= 2:
+        small_distance_squared = min(bodyA.get_smallest_edge_length(), bodyB.get_smallest_edge_length())**2 / 2
+        for collisionA, collisionB in combinations(collisions, 2):
+            are_close = collisionA.collision_point.distance_squared_to(collisionB.collision_point) < small_distance_squared
+            similar_direction = collisionA.normal * collisionB.normal > 0.5
+            if are_close and similar_direction:
+                collisions.remove(collisionB)
+                collisionA.normal = (collisionA.collision_point - collisionB.collision_point).normalize()
+
+    for collision in collisions:
+        collision.penetration_distance /= len(collisions) #to prevent position update from overshooting
+
+    return collisions
+
+def get_collisions_rectangle_rectangle_naive(bodyA: RectangleCollider, bodyB: RectangleCollider):
     @dataclass
     class EdgeCollision():
         edge: LineSegment
@@ -56,7 +75,8 @@ def get_collisions_rectangle_rectangle(bodyA: RectangleCollider, bodyB: Rectangl
             min_penetration_edge_collision = None
             for edge in _bodyb.get_edges_counterclockwise():
                 distance_to_edge = project_perpendicular_to_axis(edge, corner)
-                if distance_to_edge >= 0:
+
+                if distance_to_edge > 1e-4:
                     corner_inside = False
                     break
                 elif min_penetration_edge_collision == None or -distance_to_edge < min_penetration_edge_collision.penetration_distance:#if we have a "better" edge
@@ -72,13 +92,6 @@ def get_collisions_rectangle_rectangle(bodyA: RectangleCollider, bodyB: Rectangl
                     contact_properties = get_contact_properties(bodyA, bodyB)
                 ))
 
-            if len(collisions) == 2:
-                for collision in collisions:
-                    collision.penetration_distance /= 2 #to prevent position update from overshooting
-
-                return collisions
-
-    assert(len(collisions) <= 1)
     return collisions
 
 def get_collisions_rectangle_circle(rectangle: RectangleCollider, circle: CircleCollider):

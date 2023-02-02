@@ -69,6 +69,9 @@ class LineSegment:
     def normal(self):
         return -get_tangent(self.tangent())
 
+    def length(self):
+        return self.pointA.distance_to(self.pointB)
+
 @dataclass
 class Collider(ABC):
     offset: Vector2 = field(default_factory=zero_vector_factory)
@@ -119,6 +122,10 @@ class RectangleCollider(Collider):
     def get_edges_counterclockwise(self) -> list[LineSegment]:
         corners = self.get_corners_counterclockwise()
         return [LineSegment(corners[i], corners[(i+1) % 4]) for i in range(4)]
+
+    def get_smallest_edge_length(self):
+        edge_lengths = [edge.length() for edge in self.get_edges_counterclockwise()]
+        return min(edge_lengths)
 
 @dataclass
 class Collision:
